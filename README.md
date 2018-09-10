@@ -71,6 +71,9 @@ Save your changes and then do: `eb deploy`
 
 `eb logs`
 
+### Destroy environment:
+
+`eb terminate test`
 
 ## Sources:
 
