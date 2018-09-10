@@ -35,6 +35,41 @@ Container Service -> Repositories.
 
 Name it and create it.
 
+After that, you can login (Change the region if needed)
+
+```
+$(aws ecr get-login --no-include-email --region eu-central-1)
+```
+
+### Build the container
+
+```
+docker build -t <repo-name> .
+```
+
+### Tag the image
+
+```
+docker tag <repo-name>:latest <repo-uri>/<repo-name>:latest
+```
+
+Where `repo-name` is the name you gave the ECR. And `repo-uri` is the URI provided in
+the Console. Services -> ECS -> ECR -> Choose your repo
+
+### Push the image
+
+```
+docker push <repo-uri>/<repo-name>:latest
+```
+
+You should get something like:
+
+```
+#Output
+The push refers to repository [<repo-uri>]
+latest: digest: sha256:fb1e40e2f34e14b5a5f4ba1811d3ba7bd48c1a1d4beb44686b78afa4e83760ac size: 1787
+```
+
 ### Create a new Cluster
 
 ### Deploying changes:
@@ -51,3 +86,4 @@ Name it and create it.
 
 - https://semaphoreci.com/community/tutorials/continuous-deployment-of-a-dockerized-node-js-application-to-aws-ecs
 - https://medium.com/@alttaf/a-node-app-on-amazon-ecs-using-the-mean-stack-4fbdad5714f8
+- https://start.jcolemorrison.com/guide-to-fault-tolerant-and-load-balanced-aws-docker-deployment-on-ecs/
