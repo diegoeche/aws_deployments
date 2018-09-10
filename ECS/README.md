@@ -1,13 +1,10 @@
-# ECS Example
+# Elastic Container Service Example
 
 ## Requirements
 
+### Docker/Docker-Compose
 First install [Docker](https://docs.docker.com/install/) and Docker-Compose for easy
 iteration on getting the Docker image right.
-
-You will also need the ECS command line tool `ecs`.
-
-[]()
 
 ### Check everything is working:
 
@@ -23,6 +20,20 @@ You should be able to access the demo express app at: "http://localhost:3000"
 
 You should be able to access the demo express app at: "http://localhost"
 
+### elastic-ecs-cli
+
+You will also need the ECS command line tool `ecs`.
+
+[For instructions on installing it:](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
+
+### Elastic Container Repository
+
+Setup an image repository. Login to your AWS console and go to Services -> Elastic
+Container Service -> Repositories.
+
+![Like this:](./doc/ecr.png)
+
+Name it and create it.
 
 ### Create a new Cluster
 
