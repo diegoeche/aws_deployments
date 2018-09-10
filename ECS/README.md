@@ -26,7 +26,7 @@ You will also need the ECS command line tool `ecs`.
 
 [For instructions on installing it:](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
 
-### Elastic Container Repository
+### Elastic Container Repository (ECR)
 
 Setup an image repository. Login to your AWS console and go to Services -> Elastic
 Container Service -> Repositories.
@@ -72,6 +72,50 @@ latest: digest: sha256:fb1e40e2f34e14b5a5f4ba1811d3ba7bd48c1a1d4beb44686b78afa4e
 
 ### Create a new Cluster
 
+#### Create new AIM
+
+In order to be able to create the cluster, we first create an IAM for it so it can
+log using CloudWatch.
+
+```
+#./task-execution-assume-role.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Using the aws-cli:
+
+```
+aws iam --region eu-central-1 create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://task-execution-assume-role.json
+aws iam --region eu-central-1 attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+```
+
+### Configure the Cluster using Fargate
+
+#### Create a cluster configuration:
+
+```
+ecs-cli configure --cluster testcluster --region eu-central-1 --default-launch-type FARGATE --config-name testcluster
+```
+
+#### Create a profile:
+
+```
+ecs-cli configure profile --access-key <ACCESS_KEY_ID> --secret-key <SECRET_ACCESS_KEY> --profile-name testcluster
+```
+
+
 ### Deploying changes:
 
 ### Configuring Environment
@@ -87,3 +131,4 @@ latest: digest: sha256:fb1e40e2f34e14b5a5f4ba1811d3ba7bd48c1a1d4beb44686b78afa4e
 - https://semaphoreci.com/community/tutorials/continuous-deployment-of-a-dockerized-node-js-application-to-aws-ecs
 - https://medium.com/@alttaf/a-node-app-on-amazon-ecs-using-the-mean-stack-4fbdad5714f8
 - https://start.jcolemorrison.com/guide-to-fault-tolerant-and-load-balanced-aws-docker-deployment-on-ecs/
+- https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_tutorial_fargate.html
