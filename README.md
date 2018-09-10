@@ -22,6 +22,6 @@ aws_secret_access_key=<access-key>
 region=eu-central-1
 ```
 
-## (Using EB)[https://github.com/diegoeche/aws_deployments/tree/master/EB]
+## <a href="https://github.com/diegoeche/aws_deployments/tree/master/EB">Using EB</a>
 
-## (Using ECS)[https://github.com/diegoeche/aws_deployments/tree/master/ECS]
+## <a href="https://github.com/diegoeche/aws_deployments/tree/master/ECS">Using ECS</a>
