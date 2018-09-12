@@ -89,7 +89,7 @@ This creates an empty cluster and a VPC configured with two public subnets.
 
 
 ```
-ecs-cli up --keypair id_rsa --capability-iam --size 2 --instance-type t2.medium --cluster-config ec2-tutorial
+ecs-cli up --keypair <your-keypair-name> --capability-iam --size 2 --instance-type t2.medium --cluster-config ec2-tutorial
 ```
 
 
@@ -105,27 +105,26 @@ Cluster creation succeeded.
 ```
 
 
-#### Compose File:
+#### Launch Cluster
 
 ```
-ecs-cli compose up --create-log-groups --cluster-config ec2ecs
+ecs-cli compose up --create-log-groups --cluster-config ec2-tutorial
 ```
 
-TBD: Insert docker-compose here
 
 ```
 version: '3'
 services:
   web:
-    image: 425750527999.dkr.ecr.eu-central-1.amazonaws.com/diegoeche:latest
+    image: <ecr-uri>/<repo-name>:latest
     ports:
       - "80:80"
     logging:
       driver: awslogs
       options:
-        awslogs-group: testcluster
-        awslogs-region: eu-central-1
-        awslogs-stream-prefix: web
+        awslogs-group: ecs-tutorial
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: ecs-tutorial
 ```
 
 
@@ -140,13 +139,32 @@ task_definition:
 
 ### Deploying changes:
 
-### Configuring Environment
+Create a new image with the changes in the service as in the first step. And then:
 
-### Test Local Environment
+```
+ecs-cli compose up --cluster-config ec2-tutorial
+```
 
-### If something goes wrong:
+### Testing
+
+```
+ecs-cli ps --region us-east-1 --cluster ec2-tutorial
+```
+
+```
+# Output:
+Name                                            State                Ports                      TaskDefinition  Health
+ca6dfd1c-5949-4d9d-bb58-50a1a626535a/web        RUNNING
+52.201.248.193:80->80/tcp  ECS:4
+```
+
+You should be able to see the app deployed at: `52.201.248.193`
 
 ### Destroy environment:
+
+```
+ecs-cli down --force --cluster-config ec2-tutorial --region us-east-1
+```
 
 ## Sources:
 
