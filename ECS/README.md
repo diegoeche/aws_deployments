@@ -72,49 +72,71 @@ latest: digest: sha256:fb1e40e2f34e14b5a5f4ba1811d3ba7bd48c1a1d4beb44686b78afa4e
 
 ### Create a new Cluster
 
-#### Create new AIM
-
-In order to be able to create the cluster, we first create an IAM for it so it can
-log using CloudWatch.
 
 ```
-#./task-execution-assume-role.json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-```
-
-Using the aws-cli:
-
-```
-aws iam --region eu-central-1 create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://task-execution-assume-role.json
-aws iam --region eu-central-1 attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-```
-
-### Configure the Cluster using Fargate
-
-#### Create a cluster configuration:
-
-```
-ecs-cli configure --cluster testcluster --region eu-central-1 --default-launch-type FARGATE --config-name testcluster
+ecs-cli configure --cluster ec2-tutorial --region us-east-1 --default-launch-type EC2 --config-name ec2-tutorial
 ```
 
 #### Create a profile:
 
 ```
-ecs-cli configure profile --access-key <ACCESS_KEY_ID> --secret-key <SECRET_ACCESS_KEY> --profile-name testcluster
+ecs-cli configure profile --access-key <AWS_ACCESS_KEY>  --secret-key <AWS_SECRET_ACCESS_KEY> --profile-name ec2-tutorial
 ```
 
+### Create the Cluster
+
+This creates an empty cluster and a VPC configured with two public subnets.
+
+
+```
+ecs-cli up --keypair id_rsa --capability-iam --size 2 --instance-type t2.medium --cluster-config ec2-tutorial
+```
+
+
+```
+#Outputs
+INFO[0001] Created cluster                               cluster=testcluster region=eu-central-1
+INFO[0001] Waiting for your cluster resources to be created...
+INFO[0001] Cloudformation stack status                   stackStatus=CREATE_IN_PROGRESS
+VPC created: <THE-VPC-ID>
+Subnet created: subnet-0c025649881bf90c6
+Subnet created: subnet-0fd9dc9ed3750c0d4
+Cluster creation succeeded.
+```
+
+
+#### Compose File:
+
+```
+ecs-cli compose up --create-log-groups --cluster-config ec2ecs
+```
+
+TBD: Insert docker-compose here
+
+```
+version: '3'
+services:
+  web:
+    image: 425750527999.dkr.ecr.eu-central-1.amazonaws.com/diegoeche:latest
+    ports:
+      - "80:80"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: testcluster
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: web
+```
+
+
+```
+version: 1
+task_definition:
+  services:
+    web:
+      cpu_shares: 100
+      mem_limit: 524288000
+```
 
 ### Deploying changes:
 
