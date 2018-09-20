@@ -131,7 +131,7 @@ resource "aws_instance" "web" {
     # The connection will use the local SSH agent for authentication.
   }
 
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
 
   ami = "ami-1d4e7a66"
 
@@ -152,12 +152,7 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
-      "sudo apt-get -y install nginx ruby",
-      "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash",
-      ". ~/.nvm/nvm.sh",
-      "nvm install v8.12.0",
-      "sudo gem install capistrano",
-      "sudo service nginx start",
+      "sudo apt-get -y install nginx ruby npm nodejs"
     ]
   }
 }
