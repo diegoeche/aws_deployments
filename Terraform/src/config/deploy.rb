@@ -6,8 +6,7 @@ set :branch, "master"
 set :application, "terraform"
 set :ssh_options, { :forward_agent => true }
 set :deploy_to, "/home/ubuntu/"
-
-
+set :app_command, "bin/www.js"
 require 'json'
 
 namespace :pm2 do
@@ -54,4 +53,13 @@ namespace :pm2 do
       end
     end
   end
+end
+
+namespace :deploy do
+  desc 'Restart application'
+  task :restart do
+    invoke 'pm2:restart'
+  end
+
+  after "symlink:release", :restart
 end

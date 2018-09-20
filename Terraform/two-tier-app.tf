@@ -152,7 +152,8 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
-      "sudo apt-get -y install nginx ruby npm nodejs"
+      "sudo apt-get -y install nginx ruby npm nodejs",
+      "sudo npm install pm2 -g"
     ]
   }
 }
