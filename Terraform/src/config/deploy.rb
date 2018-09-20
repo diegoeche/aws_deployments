@@ -8,7 +8,7 @@ set :branch, "master"
 set :application, "terraform"
 set :ssh_options, { :forward_agent => true }
 set :deploy_to, "/home/ubuntu/"
-set :app_command, "all.js"
+set :app_command, "all.json"
 
 def app_path
   "#{current_path}/Terraform/src/"
